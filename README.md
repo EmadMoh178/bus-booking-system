@@ -28,6 +28,8 @@ DB_HOST=db
 DB_PORT=5432
 ```
 
+Replace `your_username` and `your_password` with your own chosen username and password for the PostgreSQL database. These credentials will be used to set up and access the database within the Docker container.
+
 ### 3. Build and Run the Docker Containers
 
 Build and start the Docker containers:
@@ -49,6 +51,16 @@ docker-compose run web rake db:seed
 ### 5. Access the Application
 
 The application will be available at `http://localhost:3000`.
+
+### 6. Shutting Down the Application
+
+When you're done using the application, you can shut down the Docker containers using the following command:
+
+```sh
+docker-compose down
+```
+
+This will stop and remove the containers, networks, and volumes created by `docker-compose up`.
 
 ## API Endpoints
 
