@@ -1,7 +1,10 @@
+# app/controllers/seats_controller.rb
 class SeatsController < ApplicationController
+  include CityMapping
+
   before_action :authorized
 
-  # GET /seats/available?start_station=x&end_station=y
+  # GET /seats/available
   def available
     start_station, end_station = validate_station_params
     return if performed?
@@ -42,8 +45,15 @@ class SeatsController < ApplicationController
   private
 
   def validate_station_params
-    start_station = params[:start_station].to_i
-    end_station = params[:end_station].to_i
+    start_station_name = params[:start_station]
+    end_station_name = params[:end_station]
+
+    unless CityMapping.valid_city?(start_station_name) && CityMapping.valid_city?(end_station_name)
+      render json: { error: "Invalid city names. Available options are: #{CityMapping::CITIES.keys.join(', ')}" }, status: :unprocessable_entity and return
+    end
+
+    start_station = CityMapping.city_to_number(start_station_name)
+    end_station = CityMapping.city_to_number(end_station_name)
 
     error_message = validate_station_range(start_station, end_station)
     if error_message

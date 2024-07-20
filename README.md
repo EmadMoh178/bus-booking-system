@@ -62,6 +62,15 @@ docker-compose down
 
 This will stop and remove the containers, networks, and volumes created by `docker-compose up`.
 
+### 7. Reset the Database
+
+If you need to reset the database and start fresh, run the following command:
+```sh
+docker-compose run web rake db:drop
+```
+
+To Recreate and set up the database, refer to step 4.
+
 ## API Endpoints
 
 ### Sign Up
@@ -94,18 +103,26 @@ This will stop and remove the containers, networks, and volumes created by `dock
 }
 ```
 
+### Station names and order
+
+1. **Cairo**
+2. **Giza**
+3. **AlFayyum**
+4. **AlMinya**
+5. **Asyut**
+
 ### Check Available Seats
 
 **Endpoint:** `/seats/available`  
 **Method:** `GET`  
 **Query Parameters:**
-- `start_station` (required): The starting station number (1-5)
-- `end_station` (required): The ending station number (1-5, end_station > start_station)
+- `start_station` (required): The starting station name.
+- `end_station` (required): The ending station name (end_station must come after start_station in order).
 
 **Example Request:**
 
 ```
-http://localhost:3000/seats/available?start_station=1&end_station=5
+http://localhost:3000/seats/available?start_station=Cairo&end_station=Asyut
 ```
 
 ### Book a Seat
@@ -114,12 +131,12 @@ http://localhost:3000/seats/available?start_station=1&end_station=5
 **Method:** `POST`  
 **Query Parameters:**
 - `seat_number` (required): The seat number to book (1-12)
-- `start_station` (required): The starting station number (1-5)
-- `end_station` (required): The ending station number (1-5, end_station > start_station)
+- `start_station` (required): The starting station name.
+- `end_station` (required): The ending station name (end_station must come after start_station in order).
 
 **Example Request:**
 
 ```
-http://localhost:3000/seats/book?seat_number=3&start_station=2&end_station=4
+http://localhost:3000/seats/book?seat_number=3&start_station=Giza&end_station=AlMinya
 ```
 
