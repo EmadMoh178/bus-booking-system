@@ -1,9 +1,28 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# db/seeds.rb
+
+# Clear existing data
+City.destroy_all
+Trip.destroy_all
+Bus.destroy_all
+Seat.destroy_all
+
+cities = City.create([
+                       { name: 'Cairo' },
+                       { name: 'Giza' },
+                       { name: 'AlFayyum' },
+                       { name: 'AlMinya' },
+                       { name: 'Asyut' }
+                     ])
+
+# Create trips for all possible combinations
+cities.each_with_index do |start_city, i|
+  cities[i+1..-1].each do |end_city|
+    trip = Trip.create(start_city: start_city, end_city: end_city)
+    bus = Bus.create(trip: trip)
+
+    # Create 12 seats for each bus
+    (1..12).each do |seat_number|
+      Seat.create(bus: bus, seat_number: seat_number)
+    end
+  end
+end

@@ -8,4 +8,11 @@ Rails.application.routes.draw do
   post 'login', to: 'authentication#login'
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :bookings, only: [] do
+    collection do
+      get 'available_seats'
+      post 'book_seat'
+    end
+  end
 end

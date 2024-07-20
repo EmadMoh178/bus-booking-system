@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  seat: one
+  start_city: one
+  end_city: one
+
+two:
+  user: two
+  seat: two
+  start_city: two
+  end_city: two
