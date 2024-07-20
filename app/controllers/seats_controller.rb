@@ -1,39 +1,23 @@
-# app/controllers/seats_controller.rb
 class SeatsController < ApplicationController
   before_action :authorized
 
   # GET /seats/available?start_station=x&end_station=y
   def available
-    start_station = params[:start_station].to_i
-    end_station = params[:end_station].to_i
+    start_station, end_station = validate_station_params
+    return if performed?
 
-    error_message = validate_station_range(start_station, end_station)
-    if error_message
-      render json: { error: error_message }, status: :unprocessable_entity and return
-    end
-
-    available_seats = Seat.includes(:bookings).all.select do |seat|
-      seat.bookings.none? do |booking|
-        (booking.start_station < end_station && booking.end_station > start_station)
-      end
-    end
-
+    available_seats = Seat.available_seats(start_station, end_station)
     render json: { available_seats: available_seats.map(&:number) }, status: :ok
   end
 
   # POST /seats/book
   def book
     seat_number = params[:seat_number].to_i
-    start_station = params[:start_station].to_i
-    end_station = params[:end_station].to_i
+    start_station, end_station = validate_station_params
+    return if performed?
 
     if seat_number < 1 || seat_number > 12
       render json: { error: "Seat number must be between 1 and 12" }, status: :unprocessable_entity and return
-    end
-
-    error_message = validate_station_range(start_station, end_station)
-    if error_message
-      render json: { error: error_message }, status: :unprocessable_entity and return
     end
 
     seat = Seat.find_by(number: seat_number)
@@ -41,9 +25,7 @@ class SeatsController < ApplicationController
       render json: { error: "Seat not found" }, status: :not_found and return
     end
 
-    is_available = seat.bookings.none? do |booking|
-      (booking.start_station < end_station && booking.end_station > start_station)
-    end
+    is_available = seat.available_for_booking?(start_station, end_station)
 
     if is_available
       booking = seat.bookings.create(start_station: start_station, end_station: end_station)
@@ -58,6 +40,18 @@ class SeatsController < ApplicationController
   end
 
   private
+
+  def validate_station_params
+    start_station = params[:start_station].to_i
+    end_station = params[:end_station].to_i
+
+    error_message = validate_station_range(start_station, end_station)
+    if error_message
+      render json: { error: error_message }, status: :unprocessable_entity and return
+    end
+
+    [start_station, end_station]
+  end
 
   def validate_station_range(start_station, end_station)
     if start_station < 1 || start_station > 5 || end_station < 1 || end_station > 5
