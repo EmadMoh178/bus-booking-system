@@ -103,6 +103,11 @@ To Recreate and set up the database, refer to step 4.
 }
 ```
 
+### Logout
+
+**Endpoint:** `/logout`  
+**Method:** `POST`
+
 ### Station names and order
 
 1. **Cairo**
