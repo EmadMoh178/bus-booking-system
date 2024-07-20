@@ -3,7 +3,17 @@
 
 This is a bus booking system built using Ruby on Rails and PostgreSQL. The application is dockerized for easy setup and deployment.
 
-## Prerequisites
+### Demo
+
+
+
+https://github.com/user-attachments/assets/22f21942-eb14-4d95-9eba-221a37a981ba
+
+
+
+
+
+### Prerequisites
 
 - Docker
 ## Setup
