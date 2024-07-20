@@ -1,0 +1,41 @@
+# app/controllers/seats_controller.rb
+class SeatsController < ApplicationController
+  before_action :authorized
+
+  # GET /seats/available?start_station=x&end_station=y
+  def available
+    start_station = params[:start_station].to_i
+    end_station = params[:end_station].to_i
+
+    available_seats = Seat.includes(:bookings).all.select do |seat|
+      seat.bookings.none? do |booking|
+        (booking.start_station < end_station && booking.end_station > start_station)
+      end
+    end
+
+    render json: { available_seats: available_seats.map(&:number) }, status: :ok
+  end
+
+  # POST /seats/book
+  def book
+    seat_number = params[:seat_number].to_i
+    start_station = params[:start_station].to_i
+    end_station = params[:end_station].to_i
+
+    seat = Seat.find_by(number: seat_number)
+    if seat.nil?
+      render json: { error: "Seat not found" }, status: :not_found and return
+    end
+
+    is_available = seat.bookings.none? do |booking|
+      (booking.start_station < end_station && booking.end_station > start_station)
+    end
+
+    if is_available
+      booking = seat.bookings.create(start_station: start_station, end_station: end_station)
+      render json: { message: "Seat booked successfully", booking: booking }, status: :created
+    else
+      render json: { error: "Seat not available for the specified range" }, status: :unprocessable_entity
+    end
+  end
+end

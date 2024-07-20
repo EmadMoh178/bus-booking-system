@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'seats/available'
+  get 'seats/book'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -9,10 +11,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :bookings, only: [] do
-    collection do
-      get 'available_seats'
-      post 'book_seat'
-    end
-  end
+  get 'seats/available', to: 'seats#available'
+  post 'seats/book', to: 'seats#book'
 end
