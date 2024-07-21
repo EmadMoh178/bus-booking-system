@@ -4,12 +4,6 @@ FROM ruby:3.0.2
 # Install dependencies
 RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
 
-# Set environment variables for the build
-ARG POSTGRES_USER
-ARG POSTGRES_PASSWORD
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
 # Set working directory
 WORKDIR /app
 

@@ -17,6 +17,18 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'jwt'
 
+group :development, :test do
+  gem 'rspec-rails'
+end
+
+# Gemfile
+group :test do
+  gem 'factory_bot_rails'
+end
+
+gem 'faker'
+
+
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"

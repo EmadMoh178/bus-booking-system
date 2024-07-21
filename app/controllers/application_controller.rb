@@ -12,20 +12,6 @@ class ApplicationController < ActionController::API
     request.headers['Authorization']
   end
 
-  def decoded_token
-    if auth_header
-      token = auth_header.split(' ')[1]
-      begin
-        JWT.decode(token, SECRET_KEY, true, algorithm: 'HS256')
-      rescue JWT::DecodeError
-        nil
-      rescue JWT::ExpiredSignature
-        render json: { message: 'Token has expired' }, status: :unauthorized
-        nil
-      end
-    end
-  end
-
   def current_user
     if decoded_token
       user_id = decoded_token[0]['user_id']
